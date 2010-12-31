@@ -12,6 +12,8 @@ for (@files) {
 
   my $structure = Paludis::ResumeState::Serialization->deserialize( { content => $data, format => 'basic' } );
   isnt( $structure, undef, "$_ returns a structure from _deserialize_basic" );
+  my $stringified = Paludis::ResumeState::Serialization->serialize( { data => $structure, format => 'basic' } );
+  is( length $stringified, length $data , 'Input =~ output ');
 }
 
 for (@files) {
@@ -19,6 +21,8 @@ for (@files) {
 
   my $structure = Paludis::ResumeState::Serialization->deserialize( { content => $data, format => 'simple_objects' } );
   isnt( $structure, undef, "$_ returns a structure from _deserialize_mock_objects" );
+  my $stringified = Paludis::ResumeState::Serialization->serialize( { data => $structure, format => 'simple_objects' } );
+
 }
 
 #use Data::Dumper (q{Dumper});
@@ -28,6 +32,8 @@ for (@files) {
 
   my $structure = Paludis::ResumeState::Serialization->deserialize( { content => $data, format => 'full_objects' } );
   isnt( $structure, undef, "$_ returns a structure from _deserialize_full_objects" );
+  my $stringified = Paludis::ResumeState::Serialization->serialize( { data => $structure, format => 'full_objects' } );
+
   # local $Data::Dumper::Indent = 1;
   #print Dumper($structure);
 }
