@@ -18,9 +18,9 @@ our $LIST_CALLBACK;
 }
 
 sub classize {
-  my ( $name, $parameters ) = @_;
+  my ( $name, $parameters, $parameters_list, $extra ) = @_;
   if ( defined $CLASS_CALLBACK ) {
-    return $CLASS_CALLBACK->( $name, $parameters );
+    return $CLASS_CALLBACK->( $name, $parameters , $parameters_list , $extra );
   }
   bless $parameters, __PACKAGE__ . '::FakeClass';
   $parameters->{_classname} = $name;
@@ -61,14 +61,17 @@ sub _build_grammar {
         if( ref $MATCH{parameters} ){
             my @parameters = @{$MATCH{parameters}};
             my %hash;
+            my @list;
+            my %extra = ();
             my $i;
             for( @parameters ){
                 $hash{$_->{label}} = $_->{value};
+                push @list, [ $_->{label} , $_->{value} ];
                 $i++;
             }
             if( scalar keys %hash  == $i ){
-                $hash{_pid} = $MATCH{pid};
-                $MATCH = classize( $MATCH{classname}, \%hash );
+                $extra{pid} = $MATCH{pid};
+                $MATCH = classize( $MATCH{classname}, \%hash, \@list, \%extra );
             }
 
 
@@ -81,17 +84,19 @@ sub _build_grammar {
 
     (?{
         if( not $MATCH{parameters} ) {
-            $MATCH = classize( $MATCH{classname}, {} );
+            $MATCH = classize( $MATCH{classname}, {}, [], {} );
         } elsif( ref $MATCH{parameters} ){
             my @parameters = @{$MATCH{parameters} || []};
             my %hash;
+            my @list;
             my $i;
             for( @parameters ){
                 $hash{$_->{label}} = $_->{value};
+                push @list, [ $_->{label} , $_->{value} ];
                 $i++;
             }
             if( scalar keys %hash  == $i ){
-                $MATCH = classize( $MATCH{classname}, \%hash );
+                $MATCH = classize( $MATCH{classname}, \%hash, \@list, {}  );
             }
 
 
