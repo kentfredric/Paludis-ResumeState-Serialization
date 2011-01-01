@@ -9,28 +9,33 @@ use Paludis::ResumeState::Serialization::Grammar;
 use Class::Load 0.06 qw();
 use Params::Util qw( _HASHLIKE _STRING);
 use Carp qw();
-
+use English qw( -no_match_vars );
 no autovivification;
 
 sub _get_content_fh {
   my ($config) = shift;
-  Carp::croak("{ filehandle => } must be a HANDLE ")
+  Carp::croak('{ filehandle => } must be a HANDLE ')
     unless _HANDLE( $config->{filehandle} );
-  local $/ = undef;
+  local $RS = undef;
   my $fh = $config->{filehandle};
   return scalar <$fh>;
 }
 
 sub _get_content_filename {
   my ($config) = shift;
-  Carp::croak("{ filename => } must be a STRING")
+  Carp::croak('{ filename => } must be a STRING')
     unless _STRING( $config->{filename} );
   my $fn = $config->{filename};
-  my $fh;
-  Carp::croak("Can't open $fn for read, $!")
-    unless open $fh, '<', $fn;
-  local $/ = undef;
-  return scalar <$fh>;
+  if ( open my $fh, '<', $fn ) {
+    my $content = do {
+      local $RS = undef;
+      scalar <$fh>;
+    };
+    close $fh or Carp::carp("Warning: Error closing $fn, $ERRNO");
+    return $content;
+  }
+  Carp::croak("Can't open $fn for read, $ERRNO");
+
 }
 
 sub _get_content {
@@ -117,10 +122,10 @@ sub deserialize {
   $content = _get_content_file($config) if ( not defined $content and defined $config->{filename} );
 
   Carp::croak(
-    "Can't deserialize, no content provided, provide deserialize(\$hash) with content => , filehandle => , or filename =>")
+    'Can\'t deserialize, no content provided, provide deserialize( hash ) with content => , filehandle => , or filename =>')
     unless defined $content;
 
-  Carp::croak("No {format=> } specified, pick either 'basic', 'simple_objects', or 'full_objects'")
+  Carp::croak(q[No {format=> } specified, pick either 'basic', 'simple_objects', or 'full_objects'])
     unless defined $config->{format};
 
   return _serializer( $config->{format} )->deserialize( $config->{content} );

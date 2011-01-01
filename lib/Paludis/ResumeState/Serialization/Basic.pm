@@ -19,7 +19,6 @@ This interface provides a very "dumb" but consistent serialization support.
     ResumeData@1234(foo="bar";baz="quux";doo=c(1="baz";2="buzz";3="bizz";count="3";);borzoi=Hysterical(););
 
 Will be deserialized as follows:
-
     {
       ResumeSpec => {
         type       => 'class',
@@ -81,7 +80,6 @@ sub serialize {
     my $object = ->deserialize( $content );
 
 =cut
-
 sub deserialize {
   my ( $self, $content ) = @_;
 
