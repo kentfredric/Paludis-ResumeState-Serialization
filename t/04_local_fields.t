@@ -21,12 +21,17 @@ for ( keys %files ) {
   local $Paludis::ResumeState::Serialization::Grammar::CLASS_CALLBACK = sub {
     my $class  = shift(@_);
     my $params = shift(@_);
+    my $listparams = shift(@_);
+    my $extras = shift(@_);
     $classes{$class} = {} unless defined $classes{$class};
-    for ( keys %{$params} ) {
+    for ( keys %{$params}, map { '_' . $_ } keys %{$extras} ) {
       $classes{$class}->{$_}++;
     }
     $callback_called++;
     $params->{_classname} = $class;
+    for ( keys %$extras ){
+        $params->{'_' . $_ } = $extras->{$_};
+    }
     return bless $params, 'Paludis::ResumeState::Serialization::Grammar::FakeClass';
 
   };
