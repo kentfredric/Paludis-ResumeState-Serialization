@@ -16,6 +16,8 @@ for (@files) {
   is( $stringified, $data , 'Input =~ output ');
 }
 
+=begin comment
+
 for (@files) {
   gunzip "t/tfiles/$_", \my $data;
 
@@ -37,5 +39,9 @@ for (@files) {
   # local $Data::Dumper::Indent = 1;
   #print Dumper($structure);
 }
+
+=end comment
+
+=cut
 
 done_testing();

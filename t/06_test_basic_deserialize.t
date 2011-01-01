@@ -13,6 +13,7 @@ for (@files) {
   my $structure = Paludis::ResumeState::Serialization->deserialize( { content => $data, format => 'basic' } );
   isnt( $structure, undef, "$_ returns a structure from _deserialize_basic" );
 }
+=begin comment
 
 for (@files) {
   gunzip "t/tfiles/$_", \my $data;
@@ -31,5 +32,9 @@ for (@files) {
   # local $Data::Dumper::Indent = 1;
   #print Dumper($structure);
 }
+
+=end comment
+
+=cut
 
 done_testing();

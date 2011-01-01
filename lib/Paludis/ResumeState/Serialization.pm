@@ -45,8 +45,8 @@ sub _serializer {
   my ($name) = shift;
   my $formats = {
     'basic'          => __PACKAGE__ . '::Basic',
-    'simple_objects' => __PACKAGE__ . '::MockObjects',
-    'full_objects'   => __PACKAGE__ . '::FullObjects',
+#    'simple_objects' => __PACKAGE__ . '::MockObjects',
+#    'full_objects'   => __PACKAGE__ . '::FullObjects',
   };
   Carp::croak("Format $name not in basic,simple_objects,full_objects") unless exists $formats->{$name};
   Class::Load::load_class( $formats->{$name} );

@@ -13,7 +13,6 @@ my $sample = 'ResumeState@1234(a="b";c=D();e=F(g="H");i=J(k=c(1=c();count="1")))
 my $expected = {
   'ResumeSpec' => bless {
     '_classname' => 'ResumeState',
-    '_pid'       => '1234',
     'a'          => 'b',
     'c'          => ( bless { _classname => 'D', }, 'Paludis::ResumeState::Serialization::Grammar::FakeClass' ),
     'e'          => (
