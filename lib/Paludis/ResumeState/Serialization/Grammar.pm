@@ -3,15 +3,85 @@ use warnings;
 
 package Paludis::ResumeState::Serialization::Grammar;
 
-# ABSTRACT: A Regexp::Grammars grammar for parsing Paludis Resumstates
+# ABSTRACT: A Regexp::Grammars grammar for parsing Paludis Resume-states
 
 use Regexp::Grammars;
 use Regexp::Grammars::Common::String;
+
+=head1 CLASS VARIABLES
+
+The following variables may be localised and assigned to
+subs as callbacks to tune how the regular expressions grammar works.
+
+=head2 $CLASS_CALLBACK
+
+    local $Paludis::ResumeState::Serialization::Grammar::CLASS_CALLBACK = sub {
+        my ( $name, $parameters, $parameters_list, $extra ) = @_;
+        return { whatever }
+    };
+
+This callback is called every time a parse completes a 'class' entry, allowing
+you to filter it however you want.
+
+B<WARNING> L<< C<Regexp::Grammars>|Regexp::Grammars >> states that during the traversal of a grammar, you really should avoid calling anything that itself uses regular expressions, as it could be broken, or interfere with the grammars parsing.
+
+This includes L<< C<Moose>|Moose >> due to it using Regular Expressions for type-constraints.
+
+If you need an advanced processing, its recommended to do just enough to identify the instance later, and then pass over the data and do the powerful magic after the grammar has run its course.
+
+=head3 $name
+
+Is the name of the class we most recently discovered.
+
+=head3 $parameters
+
+Is a hash-ref of all the classes parameters, treated as a key-value set.
+
+    Foo(key=value;bar=baz;quux=doo;);
+
+Thus produces
+
+    { bar => 'baz', key => 'value', quux => 'doo' }
+
+=head3 $parameters_list
+
+Similar to $parameters, but optimised to preserve ordering and preserve format.
+
+    [ ['key', 'value' ], [ 'bar' , 'baz' ], ['quux', 'doo' ] ]
+
+=head3 $extras
+
+Periodically, the parser may return a few extra bits of data that don't fall under the usual classifications. At present, its only the C<pid> property of the C<ResumeData> object, i.e.:
+
+    ResumeData@1234(foo=bar;);
+
+Will arrive as
+
+    $code->('ResumeData', { foo  => 'bar' }, [['foo','bar']], { pid => '1234' });
+
+=head2 $LIST_CALLBACK
+
+    local $Paludis::ResumeState::Serialization::Grammar::LIST_CALLBACK = sub {
+        my ( $parameters ) = @_;
+        return { whatever }
+    };
+
+Paludis resume files have a special case class which behaves like a list:
+
+    Foo(bar=c(1=baz;2=quux;3=doo;count=3;););
+
+We detect this intent and pass it to $LIST_CALLBACK as an array.
+
+    $code->(['baz','quux','doo' ]);
+
+
+=cut
 
 our $CLASS_CALLBACK;
 our $LIST_CALLBACK;
 
 {
+  ## no critic ( ProhibitMultiplePackages )
   package    # Hide
     Paludis::ResumeState::Serialization::Grammar::FakeClass;
 
@@ -19,17 +89,17 @@ our $LIST_CALLBACK;
     Paludis::ResumeState::Serialization::Grammar::FakeList;
 }
 
-sub classize {
+sub _classize {
   my ( $name, $parameters, $parameters_list, $extra ) = @_;
   if ( defined $CLASS_CALLBACK ) {
-    return $CLASS_CALLBACK->( $name, $parameters , $parameters_list , $extra );
+    return $CLASS_CALLBACK->( $name, $parameters, $parameters_list, $extra );
   }
   bless $parameters, __PACKAGE__ . '::FakeClass';
   $parameters->{_classname} = $name;
   return $parameters;
 }
 
-sub listize {
+sub _listize {
   my ($parameters) = @_;
   if ( defined $LIST_CALLBACK ) {
     return $LIST_CALLBACK->($parameters);
@@ -40,12 +110,26 @@ sub listize {
 
 my $t;
 
+=method grammar
+
+    my $grammar = Paludis::ResumeState::Serialization::Grammar::grammar();
+    if( $data =~ $grammar ){
+        do_stuff_with(\%/);
+    }
+
+Returns a grammar regular expression object formed with L<< C<Regexp::Grammars>|Regexp::Grammars >>.
+
+To tune the data it provides, localise L</$CLASS_CALLBACK> and L</$LIST_CALLBACK>.
+
+=cut
+
 sub grammar {
   _build_grammar() unless defined $t;
   return $t;
 }
 
 sub _build_grammar {
+  ## no critic ( RegularExpressions )
   $t = qr{
 
     <extends: Regexp::Grammars::Common::String>
@@ -73,7 +157,7 @@ sub _build_grammar {
             }
             if( scalar keys %hash  == $i ){
                 $extra{pid} = $MATCH{pid};
-                $MATCH = classize( $MATCH{classname}, \%hash, \@list, \%extra );
+                $MATCH = _classize( $MATCH{classname}, \%hash, \@list, \%extra );
             }
 
 
@@ -86,7 +170,7 @@ sub _build_grammar {
 
     (?{
         if( not $MATCH{parameters} ) {
-            $MATCH = classize( $MATCH{classname}, {}, [], {} );
+            $MATCH = _classize( $MATCH{classname}, {}, [], {} );
         } elsif( ref $MATCH{parameters} ){
             my @parameters = @{$MATCH{parameters} || []};
             my %hash;
@@ -98,7 +182,7 @@ sub _build_grammar {
                 $i++;
             }
             if( scalar keys %hash  == $i ){
-                $MATCH = classize( $MATCH{classname}, \%hash, \@list, {}  );
+                $MATCH = _classize( $MATCH{classname}, \%hash, \@list, {}  );
             }
 
 
@@ -108,12 +192,12 @@ sub _build_grammar {
     <token: cvalue>     <classname=(c)>\(<parameters=paramlist>\)
     (?{
         if( not $MATCH{parameters} ){
-            $MATCH = listize( [] );
+            $MATCH = _listize( [] );
         } elsif ( ref $MATCH{parameters} and $MATCH{parameters}->[-1]->{label} eq 'count' ){
             my $count = pop @{ $MATCH{parameters} };
             $MATCH{count} = int($count->{value});
             my @items = map { $_->{value} } @{ $MATCH{parameters} };
-            $MATCH = listize( \@items );
+            $MATCH = _listize( \@items );
         }
     })
 
@@ -126,6 +210,7 @@ sub _build_grammar {
 
     }x;
 
+  return 1;
 }
 
 1;
