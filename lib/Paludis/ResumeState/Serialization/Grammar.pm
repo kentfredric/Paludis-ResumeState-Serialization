@@ -3,6 +3,8 @@ use warnings;
 
 package Paludis::ResumeState::Serialization::Grammar;
 
+# ABSTRACT: A Regexp::Grammars grammar for parsing Paludis Resumstates
+
 use Regexp::Grammars;
 use Regexp::Grammars::Common::String;
 
