@@ -3,6 +3,8 @@ use warnings;
 
 package Paludis::ResumeState::Serialization::Basic;
 
+# ABSTRACT: Basic & Consistent ResumeState serialization interface.
+
 use Paludis::ResumeState::Serialization::Grammar;
 use Params::Util qw( _HASHLIKE _STRING );
 
