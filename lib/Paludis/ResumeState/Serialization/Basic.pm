@@ -10,6 +10,48 @@ use Params::Util qw( _HASHLIKE _STRING );
 use Class::Load 0.06 qw();
 use English qw( -no_match_vars );
 
+=head1 SYNOPSIS
+
+See L<< C<::Serialization>|Paludis::ResumeState::Serialization >> for recommended usage.
+
+This interface provides a very "dumb" but consistent serialization support.
+
+    ResumeData@1234(foo="bar";baz="quux";doo=c(1="baz";2="buzz";3="bizz";count="3";);borzoi=Hysterical(););
+
+Will be deserialized as follows:
+
+    {
+      ResumeSpec => {
+        type       => 'class',
+        classname  => 'ResumeData',
+        pid        => '1234',
+        parameters => [
+          [ 'foo', 'bar' ],
+          [ 'baz', 'quux' ],
+          [
+            'doo',
+            {
+              type       => 'array',
+              parameters => [ 'baz', 'buzz', 'bizz' ],
+              count      => 3
+            }
+          ],
+          [
+            'borzoi',
+            {
+              type       => 'class',
+              classname  => 'Hysterical',
+              parameters => [],
+            }
+          ],
+        ],
+      },
+    }
+
+And giving that exact structure to serialize, will return the aforementioned serialized string.
+
+=cut
+
 ## no critic ( RequireArgUnpacking ProhibitUnreachableCode ProhibitMagicNumbers  RequireCheckedSyscalls )
 sub _debug {
 
@@ -22,12 +64,23 @@ sub _debug {
   return 1;
 }
 
+=method serialize
+
+    my $string = ->serialize( $data );
+
+=cut
+
 sub serialize {
   my ( $self, $data ) = @_;
   my $string = _serialize_basic_resumespec($data);
   return $string;
 }
 
+=method deserialize
+
+    my $object = ->deserialize( $content );
+
+=cut
 sub deserialize {
   my ( $self, $content ) = @_;
 

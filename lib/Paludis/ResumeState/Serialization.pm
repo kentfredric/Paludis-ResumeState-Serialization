@@ -23,7 +23,25 @@ sub _get_content {
 
 =head1 SYNOPSIS
 
+    use Paludis::ResumeState::Serialization;
 
+    open my $fh, '<' , '/resumefile' or die;
+
+    my $objects = Paludis::ResumeState::Serialization->deserialize({
+        content => ( do { local $/ = undef;  scalar <$fh> } ),
+        format => 'basic'
+    });
+
+    my $content = Paludis::ResumeState::Serialization->serialize({
+        data => $object,
+        format => 'basic'
+    });
+
+    # $content should == contents of resumefile.
+
+This class is just really a proxy serialization interface for a few of the varying back-ends.
+
+Currently only the 'basic' back-end exists, which provides basic, but consistent serialization support.
 
 =cut
 
@@ -35,11 +53,35 @@ sub _serializer {
     #    'simple_objects' => __PACKAGE__ . '::MockObjects',
     #    'full_objects'   => __PACKAGE__ . '::FullObjects',
   };
+  my $formatnames = join q{,}, keys %{$formats};
 
-  Carp::croak( "Format $name not in " . join q{,}, keys %{$formats} ) unless exists $formats->{$name};
+  Carp::croak("Format Name must be a string ( in [$formatnames] ), not undef or a ref")
+    unless defined $name and _STRING($name);
+
+  Carp::croak("Format $name not in $formatnames ") unless exists $formats->{$name};
   Class::Load::load_class( $formats->{$name} );
   return $formats->{$name};
 }
+
+=head2 FormatNames
+
+=head3 basic
+
+Defers serialization to L<< C<::Basic>|Paludis::ResumeState::Serialization::Basic >>
+
+=cut
+
+
+=method deserialize
+
+    my $object = ::Serialization->deserialize({
+        content => $string
+        format  => FormatName
+    });
+
+See L</FormatNames>
+
+=cut
 
 sub deserialize {
   my ( $self, $config ) = @_;
@@ -52,11 +94,19 @@ sub deserialize {
   Carp::croak('Can\'t deserialize, no content provided, provide deserialize( hash ) with content => ')
     unless defined $content;
 
-  Carp::croak(q[No {format=> } specified, pick 'basic'])
-    unless defined $config->{format};
-
   return _serializer( $config->{format} )->deserialize( $config->{content} );
 }
+
+=method serialize
+
+    my $string = ::Serialization->serialize({
+        data => $object,
+        format => FormatName
+    });
+
+See L</FormatNames>
+
+=cut
 
 sub serialize {
   my ( $self, $config ) = @_;
