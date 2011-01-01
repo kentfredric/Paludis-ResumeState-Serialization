@@ -41,6 +41,7 @@ sub _get_content {
 
 This class is just really a proxy serialization interface for a few of the varying back-ends.
 
+
 Currently only the 'basic' back-end exists, which provides basic, but consistent serialization support.
 
 =cut
@@ -81,6 +82,7 @@ See L</FormatNames>
 
 =cut
 
+
 sub deserialize {
   my ( $self, $config ) = @_;
 
@@ -91,9 +93,6 @@ sub deserialize {
 
   Carp::croak('Can\'t deserialize, no content provided, provide deserialize( hash ) with content => ')
     unless defined $content;
-
-  Carp::croak(q[No {format=> } specified, pick 'basic'])
-    unless defined $config->{format};
 
   return _serializer( $config->{format} )->deserialize( $config->{content} );
 }
