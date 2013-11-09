@@ -35,7 +35,7 @@ sub identify_param {
       my $id = identify_param($_);
       $types{$id}++;
     }
-    return 'FakeArray[' . join( q{,}, keys %types ) . ']';
+    return 'FakeArray[' . join( q{,}, sort keys %types ) . ']';
   }
   return '?';
 }
@@ -117,7 +117,7 @@ is_deeply(
     JobList => {
       'items' => {
         'FakeArray[FakeClass[PretendJob]]'                     => 3,
-        'FakeArray[FakeClass[InstallJob],FakeClass[FetchJob]]' => 3,
+        'FakeArray[FakeClass[FetchJob],FakeClass[InstallJob]]' => 3,
       }
     },
     JobRequirement => {
