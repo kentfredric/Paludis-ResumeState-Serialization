@@ -49,9 +49,8 @@ sub _serializer {
   my ($name) = shift;
   my $formats = {
     'basic' => __PACKAGE__ . '::Basic',
-
-    #    'simple_objects' => __PACKAGE__ . '::MockObjects',
-    #    'full_objects'   => __PACKAGE__ . '::FullObjects',
+    'simple_objects' => __PACKAGE__ . '::MockObjects',
+    'full_objects'   => __PACKAGE__ . '::FullObjects',
   };
   my $formatnames = join q{,}, keys %{$formats};
 

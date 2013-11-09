@@ -24,7 +24,7 @@ for ( keys %files ) {
     my $listparams = shift(@_);
     my $extras     = shift(@_);
     $classes{$class} = {} unless defined $classes{$class};
-    for ( keys %{$params}, map { '_' . $_ } keys %{$extras} ) {
+    for ( keys %{$params} ) {
       $classes{$class}->{$_}++;
     }
     $callback_called++;
