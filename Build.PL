@@ -30,7 +30,7 @@ my %module_build_args = (
     "Regexp::Grammars" => 0,
     "Regexp::Grammars::Common::String" => 0,
     "autovivification" => 0,
-    "perl" => "5.006",
+    "perl" => "5.010",
     "strict" => 0,
     "warnings" => 0
   },
