@@ -13,6 +13,7 @@ for (@files) {
   my $structure = Paludis::ResumeState::Serialization->deserialize( { content => $data, format => 'basic' } );
   isnt( $structure, undef, "$_ returns a structure from _deserialize_basic" );
 }
+
 =begin comment
 
 for (@files) {

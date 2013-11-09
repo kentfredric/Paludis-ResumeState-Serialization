@@ -35,7 +35,7 @@ sub identify_param {
       my $id = identify_param($_);
       $types{$id}++;
     }
-    return 'FakeArray[' . join( q{,}, keys %types ) . ']';
+    return 'FakeArray[' . join( q{,}, sort keys %types ) . ']';
   }
   return '?';
 }
@@ -44,10 +44,10 @@ for ( keys %files ) {
   gunzip "t/tfiles/$_", \my $data;
   my $callback_called;
   local $Paludis::ResumeState::Serialization::Grammar::CLASS_CALLBACK = sub {
-    my $class  = shift(@_);
-    my $params = shift(@_);
+    my $class      = shift(@_);
+    my $params     = shift(@_);
     my $paramslist = shift(@_);
-    my $extras = shift(@_);
+    my $extras     = shift(@_);
     $classes{$class} = {} unless defined $classes{$class};
     for ( keys %{$params} ) {
       my $type = identify_param( $params->{$_} );
@@ -55,8 +55,8 @@ for ( keys %files ) {
       $classes{$class}->{$_}->{$type}++;
     }
     for ( keys %{$extras} ) {
-      my $type = identify_param( $extras->{$_} );
-      my $label = "_" . $_ ;
+      my $type  = identify_param( $extras->{$_} );
+      my $label = "_" . $_;
       $classes{$class}->{$label} = {} unless defined $classes{$class}->{$label};
       $classes{$class}->{$label}->{$type}++;
     }
@@ -117,7 +117,7 @@ is_deeply(
     JobList => {
       'items' => {
         'FakeArray[FakeClass[PretendJob]]'                     => 3,
-        'FakeArray[FakeClass[InstallJob],FakeClass[FetchJob]]' => 3,
+        'FakeArray[FakeClass[FetchJob],FakeClass[InstallJob]]' => 3,
       }
     },
     JobRequirement => {

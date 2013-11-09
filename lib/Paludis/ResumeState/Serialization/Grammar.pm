@@ -3,7 +3,10 @@ use warnings;
 
 package Paludis::ResumeState::Serialization::Grammar;
 BEGIN {
-  $Paludis::ResumeState::Serialization::Grammar::VERSION = '0.01000409';
+  $Paludis::ResumeState::Serialization::Grammar::AUTHORITY = 'cpan:KENTNL';
+}
+{
+  $Paludis::ResumeState::Serialization::Grammar::VERSION = '0.01000410';
 }
 
 # ABSTRACT: A Regexp::Grammars grammar for parsing Paludis Resume-states
@@ -80,7 +83,7 @@ sub _build_grammar {
             }
             if( scalar keys %hash  == $i ){
                 $extra{pid} = $MATCH{pid};
-                $MATCH = _classize( $MATCH{classname}, \%hash, \@list, \%extra );
+                $MATCH = Paludis::ResumeState::Serialization::Grammar::_classize( $MATCH{classname}, \%hash, \@list, \%extra );
             }
 
 
@@ -93,7 +96,7 @@ sub _build_grammar {
 
     (?{
         if( not $MATCH{parameters} ) {
-            $MATCH = _classize( $MATCH{classname}, {}, [], {} );
+            $MATCH = Paludis::ResumeState::Serialization::Grammar::_classize( $MATCH{classname}, {}, [], {} );
         } elsif( ref $MATCH{parameters} ){
             my @parameters = @{$MATCH{parameters} || []};
             my %hash;
@@ -105,7 +108,7 @@ sub _build_grammar {
                 $i++;
             }
             if( scalar keys %hash  == $i ){
-                $MATCH = _classize( $MATCH{classname}, \%hash, \@list, {}  );
+                $MATCH = Paludis::ResumeState::Serialization::Grammar::_classize( $MATCH{classname}, \%hash, \@list, {}  );
             }
 
 
@@ -115,12 +118,12 @@ sub _build_grammar {
     <token: cvalue>     <classname=(c)>\(<parameters=paramlist>\)
     (?{
         if( not $MATCH{parameters} ){
-            $MATCH = _listize( [] );
+            $MATCH = Paludis::ResumeState::Serialization::Grammar::_listize( [] );
         } elsif ( ref $MATCH{parameters} and $MATCH{parameters}->[-1]->{label} eq 'count' ){
             my $count = pop @{ $MATCH{parameters} };
             $MATCH{count} = int($count->{value});
             my @items = map { $_->{value} } @{ $MATCH{parameters} };
-            $MATCH = _listize( \@items );
+            $MATCH = Paludis::ResumeState::Serialization::Grammar::_listize( \@items );
         }
     })
 
@@ -139,7 +142,10 @@ sub _build_grammar {
 1;
 
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -147,7 +153,7 @@ Paludis::ResumeState::Serialization::Grammar - A Regexp::Grammars grammar for pa
 
 =head1 VERSION
 
-version 0.01000409
+version 0.01000410
 
 =head1 METHODS
 
@@ -234,10 +240,9 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

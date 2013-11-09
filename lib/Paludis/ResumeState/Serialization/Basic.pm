@@ -3,7 +3,10 @@ use warnings;
 
 package Paludis::ResumeState::Serialization::Basic;
 BEGIN {
-  $Paludis::ResumeState::Serialization::Basic::VERSION = '0.01000409';
+  $Paludis::ResumeState::Serialization::Basic::AUTHORITY = 'cpan:KENTNL';
+}
+{
+  $Paludis::ResumeState::Serialization::Basic::VERSION = '0.01000410';
 }
 
 # ABSTRACT: Basic & Consistent Resume-State serialization interface.
@@ -32,6 +35,7 @@ sub serialize {
   my $string = _serialize_basic_resumespec($data);
   return $string;
 }
+
 
 sub deserialize {
   my ( $self, $content ) = @_;
@@ -133,9 +137,11 @@ sub _serialize_basic_resumespec {
 
 1;
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -143,7 +149,7 @@ Paludis::ResumeState::Serialization::Basic - Basic & Consistent Resume-State ser
 
 =head1 VERSION
 
-version 0.01000409
+version 0.01000410
 
 =head1 SYNOPSIS
 
@@ -201,10 +207,9 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
