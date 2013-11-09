@@ -157,7 +157,7 @@ sub _build_grammar {
             }
             if( scalar keys %hash  == $i ){
                 $extra{pid} = $MATCH{pid};
-                $MATCH = _classize( $MATCH{classname}, \%hash, \@list, \%extra );
+                $MATCH = Paludis::ResumeState::Serialization::Grammar::_classize( $MATCH{classname}, \%hash, \@list, \%extra );
             }
 
 
@@ -170,7 +170,7 @@ sub _build_grammar {
 
     (?{
         if( not $MATCH{parameters} ) {
-            $MATCH = _classize( $MATCH{classname}, {}, [], {} );
+            $MATCH = Paludis::ResumeState::Serialization::Grammar::_classize( $MATCH{classname}, {}, [], {} );
         } elsif( ref $MATCH{parameters} ){
             my @parameters = @{$MATCH{parameters} || []};
             my %hash;
@@ -182,7 +182,7 @@ sub _build_grammar {
                 $i++;
             }
             if( scalar keys %hash  == $i ){
-                $MATCH = _classize( $MATCH{classname}, \%hash, \@list, {}  );
+                $MATCH = Paludis::ResumeState::Serialization::Grammar::_classize( $MATCH{classname}, \%hash, \@list, {}  );
             }
 
 
@@ -192,12 +192,12 @@ sub _build_grammar {
     <token: cvalue>     <classname=(c)>\(<parameters=paramlist>\)
     (?{
         if( not $MATCH{parameters} ){
-            $MATCH = _listize( [] );
+            $MATCH = Paludis::ResumeState::Serialization::Grammar::_listize( [] );
         } elsif ( ref $MATCH{parameters} and $MATCH{parameters}->[-1]->{label} eq 'count' ){
             my $count = pop @{ $MATCH{parameters} };
             $MATCH{count} = int($count->{value});
             my @items = map { $_->{value} } @{ $MATCH{parameters} };
-            $MATCH = _listize( \@items );
+            $MATCH = Paludis::ResumeState::Serialization::Grammar::_listize( \@items );
         }
     })
 
