@@ -347,22 +347,6 @@
             "version" : "2.000005"
          },
          {
-            "class" : "Dist::Zilla::Plugin::Test::Compile",
-            "config" : {
-               "Dist::Zilla::Plugin::Test::Compile" : {
-                  "filename" : "t/00-compile.t",
-                  "module_finder" : [
-                     ":InstallModules"
-                  ],
-                  "script_finder" : [
-                     ":ExecFiles"
-                  ]
-               }
-            },
-            "name" : "@Author::KENTNL/Test::Compile",
-            "version" : "2.037"
-         },
-         {
             "class" : "Dist::Zilla::Plugin::Test::Perl::Critic",
             "name" : "@Author::KENTNL/Test::Perl::Critic",
             "version" : "2.112410"
@@ -560,6 +544,22 @@
             },
             "name" : "@Author::KENTNL/::Role::BundleDeps",
             "version" : "5.006"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Test::Compile",
+            "config" : {
+               "Dist::Zilla::Plugin::Test::Compile" : {
+                  "filename" : "t/00-compile.t",
+                  "module_finder" : [
+                     ":InstallModules"
+                  ],
+                  "script_finder" : [
+                     ":ExecFiles"
+                  ]
+               }
+            },
+            "name" : "Test::Compile",
+            "version" : "2.037"
          },
          {
             "class" : "Dist::Zilla::Plugin::Encoding",

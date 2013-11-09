@@ -3,7 +3,7 @@ use warnings;
 
 # this test was generated with Dist::Zilla::Plugin::Test::Compile 2.037
 
-use Test::More  tests => 3 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
+use Test::More  tests => 3;
 
 
 
@@ -45,6 +45,6 @@ for my $lib (@module_files)
 
 
 
-is(scalar(@warnings), 0, 'no warnings found') if $ENV{AUTHOR_TESTING};
+# no warning checks;
 
 

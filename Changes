@@ -1,6 +1,6 @@
 Revision history for Paludis-ResumeState-Serialization
 
-0.01000410 2013-11-09T17:15:29Z
+0.01000410 2013-11-09T17:42:05Z
  [00 Bugfix]
  - Avoid Regexp::Grammars bug on >5.18 which inhibit calling local
    functions, by fully qualifiying the relevant functions.
