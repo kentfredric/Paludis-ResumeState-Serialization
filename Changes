@@ -2,6 +2,6 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
-0.01000409 2011-01-01 22:42:23 Pacific/Auckland
-          First version.
+0.01000409 2011-01-01T09:42:23Z
+ - First version.
 

@@ -81,6 +81,7 @@ sub serialize {
     my $object = ->deserialize( $content );
 
 =cut
+
 sub deserialize {
   my ( $self, $content ) = @_;
 

@@ -71,7 +71,6 @@ Defers serialization to L<< C<::Basic>|Paludis::ResumeState::Serialization::Basi
 
 =cut
 
-
 =method deserialize
 
     my $object = ::Serialization->deserialize({
