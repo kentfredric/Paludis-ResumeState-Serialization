@@ -48,7 +48,6 @@ sub _serializer {
 
 
 
-
 sub deserialize {
   my ( $self, $config ) = @_;
 

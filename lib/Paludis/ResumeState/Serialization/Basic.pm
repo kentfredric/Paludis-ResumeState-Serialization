@@ -36,6 +36,7 @@ sub serialize {
   return $string;
 }
 
+
 sub deserialize {
   my ( $self, $content ) = @_;
 

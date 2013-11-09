@@ -13,7 +13,7 @@ for (@files) {
   my $structure = Paludis::ResumeState::Serialization->deserialize( { content => $data, format => 'basic' } );
   isnt( $structure, undef, "$_ returns a structure from _deserialize_basic" );
   my $stringified = Paludis::ResumeState::Serialization->serialize( { data => $structure, format => 'basic' } );
-  is( $stringified, $data , 'Input =~ output ');
+  is( $stringified, $data, 'Input =~ output ' );
 }
 
 =begin comment
