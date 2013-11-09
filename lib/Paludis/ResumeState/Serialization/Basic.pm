@@ -140,6 +140,8 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Paludis::ResumeState::Serialization::Basic - Basic & Consistent Resume-State serialization interface.
