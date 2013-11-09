@@ -63,7 +63,7 @@ Revision history for {{$dist->name}}
  - Dist::Zilla::PluginBundle::Author::KENTNL::Lite v1.3.0
 
  [Dependencies::Added / runtime requires]
- - perl 5.006
+ - perl 5.010
  - strict
  - warnings
 
@@ -92,6 +92,7 @@ Revision history for {{$dist->name}}
 
  [Dependencies::Removed / test requires]
  - File::Find
+ - File::Temp
 
  [Documentation]
  - Update LICENSE copyright year
